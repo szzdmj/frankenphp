@@ -3,7 +3,7 @@
 #checkov:skip=CKV_DOCKER_3
 #checkov:skip=CKV_DOCKER_7
 FROM php-base AS common
-
+FROM golang:1.24-alpine AS build
 WORKDIR /app
 
 RUN apt-get update && \
@@ -38,9 +38,7 @@ HEALTHCHECK CMD curl -f http://localhost:2019/metrics || exit 1
 ENV XDG_CONFIG_HOME=/config
 ENV XDG_DATA_HOME=/data
 
-EXPOSE 80
-EXPOSE 443
-EXPOSE 443/udp
+EXPOSE 8085
 EXPOSE 2019
 
 LABEL org.opencontainers.image.title=FrankenPHP

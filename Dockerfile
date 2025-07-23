@@ -7,7 +7,7 @@
 # Stage 1: Common base (PHP setup)
 #############################
 FROM php-base AS common
-
+FROM php:8.3-cli AS common
 #############################
 # Stage 2: Golang toolchain for building (Debian-based)
 #############################

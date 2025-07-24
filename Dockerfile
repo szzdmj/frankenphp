@@ -61,7 +61,7 @@ WORKDIR /go/src/app
 COPY . .
 
 # Copy go.sh script
-COPY caddy/frankenphp/go.sh ./caddy/frankenphp/go.sh
+COPY frankenphp/go.sh ./caddy/frankenphp/go.sh
 RUN chmod +x ./caddy/frankenphp/go.sh
 
 # Build FrankenPHP binary

@@ -66,5 +66,29 @@ app.get("/singleton", async (c) => {
   const container = getContainer(c.env.MY_CONTAINER);
   return await container.fetch(c.req.raw);
 });
+export default {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url)
+
+    // Modify host and path
+    const backendUrl = new URL(env.ORIGIN)
+    backendUrl.pathname = url.pathname
+    backendUrl.search = url.search
+
+    // Forward the request
+    const response = await fetch(backendUrl.toString(), {
+      method: request.method,
+      headers: request.headers,
+      body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+      redirect: 'manual',
+    })
+
+    // Return the response directly
+    return new Response(response.body, {
+      status: response.status,
+      headers: response.headers,
+    })
+  }
+}
 
 export default app;

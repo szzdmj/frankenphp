@@ -24,7 +24,7 @@ export class MyContainer extends Container {
 const app = new Hono<{
   Bindings: {
     MY_CONTAINER: DurableObjectNamespace<MyContainer>;
-    ORIGIN: string; // Optional: if you use a fixed FrankenPHP backend URL
+    ORIGIN: string;
   };
 }>();
 
@@ -61,4 +61,8 @@ app.get("/error", async (c) => {
 });
 
 app.all("*", async (c) => {
-  // Fallback route: f
+  const container = getContainer(c.env.MY_CONTAINER, "fallback");
+  return await container.fetch(c.req.raw);
+});
+
+export default app;

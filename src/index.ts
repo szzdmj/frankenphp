@@ -2,16 +2,12 @@ import { Container, loadBalance, getContainer } from "@cloudflare/containers";
 import { Hono } from "hono";
 
 export class MyContainer extends Container {
-  // Port the container listens on (default: 8080)
   defaultPort = 8085;
-  // Time before container sleeps due to inactivity (default: 30s)
   sleepAfter = "2m";
-  // Environment variables passed to the container
   envVars = {
     MESSAGE: "I was passed in via the container class!",
   };
 
-  // Optional lifecycle hooks
   override onStart() {
     console.log("Container successfully started");
   }
@@ -25,23 +21,23 @@ export class MyContainer extends Container {
   }
 }
 
-// Create Hono app with proper typing for Cloudflare Workers
 const app = new Hono<{
-  Bindings: { MY_CONTAINER: DurableObjectNamespace<MyContainer> };
+  Bindings: {
+    MY_CONTAINER: DurableObjectNamespace<MyContainer>;
+    ORIGIN: string; // Optional: if you use a fixed FrankenPHP backend URL
+  };
 }>();
 
-// Home route with available endpoints
 app.get("/", (c) => {
   return c.text(
     "Available endpoints:\n" +
-      "GET /container/<ID> - Start a container for each ID with a 2m timeout\n" +
-      "GET /lb - Load balance requests over multiple containers\n" +
-      "GET /error - Start a container that errors (demonstrates error handling)\n" +
-      "GET /singleton - Get a single specific container instance",
+      "GET /container/:id - Start a container for that ID\n" +
+      "GET /lb - Load-balanced container routing\n" +
+      "GET /singleton - Singleton container\n" +
+      "Other paths -> forwarded to FrankenPHP backend"
   );
 });
 
-// Route requests to a specific container using the container ID
 app.get("/container/:id", async (c) => {
   const id = c.req.param("id");
   const containerId = c.env.MY_CONTAINER.idFromName(`/container/${id}`);
@@ -49,46 +45,20 @@ app.get("/container/:id", async (c) => {
   return await container.fetch(c.req.raw);
 });
 
-// Demonstrate error handling - this route forces a panic in the container
-app.get("/error", async (c) => {
-  const container = getContainer(c.env.MY_CONTAINER, "error-test");
-  return await container.fetch(c.req.raw);
-});
-
-// Load balance requests across multiple containers
 app.get("/lb", async (c) => {
   const container = await loadBalance(c.env.MY_CONTAINER, 3);
   return await container.fetch(c.req.raw);
 });
 
-// Get a single container instance (singleton pattern)
 app.get("/singleton", async (c) => {
   const container = getContainer(c.env.MY_CONTAINER);
   return await container.fetch(c.req.raw);
 });
-export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const url = new URL(request.url)
 
-    // Modify host and path
-    const backendUrl = new URL(env.ORIGIN)
-    backendUrl.pathname = url.pathname
-    backendUrl.search = url.search
+app.get("/error", async (c) => {
+  const container = getContainer(c.env.MY_CONTAINER, "error-test");
+  return await container.fetch(c.req.raw);
+});
 
-    // Forward the request
-    const response = await fetch(backendUrl.toString(), {
-      method: request.method,
-      headers: request.headers,
-      body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
-      redirect: 'manual',
-    })
-
-    // Return the response directly
-    return new Response(response.body, {
-      status: response.status,
-      headers: response.headers,
-    })
-  }
-}
-
-export default app;
+app.all("*", async (c) => {
+  // Fallback route: f

@@ -9,11 +9,11 @@ export class MyContainer extends Container {
   };
 
   override onStart() {
-    console.log("Container successfully started");
+    console.log("Container started");
   }
 
   override onStop() {
-    console.log("Container successfully shut down");
+    console.log("Container stopped");
   }
 
   override onError(error: unknown) {
@@ -28,15 +28,15 @@ const app = new Hono<{
   };
 }>();
 
-app.get("/", (c) => {
-  return c.text(
-    "Available endpoints:\n" +
-      "GET /container/:id - Start a container for that ID\n" +
-      "GET /lb - Load-balanced container routing\n" +
-      "GET /singleton - Singleton container\n" +
-      "Other paths -> forwarded to FrankenPHP backend"
-  );
-});
+app.get("/", (c) =>
+  c.text(
+    "Endpoints:\n" +
+      "/container/:id\n" +
+      "/lb\n" +
+      "/singleton\n" +
+      "Unmatched paths → proxied to FrankenPHP container"
+  )
+);
 
 app.get("/container/:id", async (c) => {
   const id = c.req.param("id");
@@ -52,11 +52,6 @@ app.get("/lb", async (c) => {
 
 app.get("/singleton", async (c) => {
   const container = getContainer(c.env.MY_CONTAINER);
-  return await container.fetch(c.req.raw);
-});
-
-app.get("/error", async (c) => {
-  const container = getContainer(c.env.MY_CONTAINER, "error-test");
   return await container.fetch(c.req.raw);
 });
 

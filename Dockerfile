@@ -67,7 +67,7 @@ COPY . .
 
 # Adjusted path for go.sh
 COPY caddy/frankenphp/go.sh ./caddy/frankenphp/go.sh
-RUN chmod +x ./caddy/frankenphp/go.sh
+RUN chmod +x ./caddy/frankenphp/go.sh && cat ./caddy/frankenphp/go.sh
 
 WORKDIR /go/src/app/caddy/frankenphp
 

@@ -40,6 +40,11 @@ RUN ln -s /etc/caddy/Caddyfile /etc/frankenphp/Caddyfile
 ENV XDG_CONFIG_HOME=/config
 ENV XDG_DATA_HOME=/data
 
+# Default values to prevent Docker warnings
+ENV PHP_CFLAGS=""
+ENV PHP_CPPFLAGS=""
+ENV PHP_LDFLAGS=""
+
 EXPOSE 8085
 EXPOSE 2019
 
@@ -60,11 +65,10 @@ RUN go mod download
 WORKDIR /go/src/app
 COPY . .
 
-# Copy go.sh script
-COPY frankenphp/go.sh ./caddy/frankenphp/go.sh
+# Adjusted path for go.sh
+COPY caddy/frankenphp/go.sh ./caddy/frankenphp/go.sh
 RUN chmod +x ./caddy/frankenphp/go.sh
 
-# Build FrankenPHP binary
 WORKDIR /go/src/app/caddy/frankenphp
 
 ENV CGO_CFLAGS="-DFRANKENPHP_VERSION=dev $PHP_CFLAGS"
@@ -80,16 +84,4 @@ RUN GOBIN=/usr/local/bin \
 
 #############################
 # Stage 3: Final image
-#############################
-FROM base AS final
-
-COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
-COPY --from=builder /usr/local/lib/libwatcher* /usr/local/lib/
-
-RUN setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp && \
-    frankenphp version && \
-    frankenphp build-info
-
-CMD ["--config", "/etc/frankenphp/Caddyfile", "--adapter", "caddyfile"]
-
-HEALTHCHECK CMD curl -f http://localhost:2019/metrics || exit 1
+##########

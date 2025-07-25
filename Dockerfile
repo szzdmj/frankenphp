@@ -6,18 +6,17 @@ FROM golang:1.22 AS builder
 ENV PHP_VERSION=8.3
 
 # Install PHP and build tools
+# Add this in the Dockerfile, before building FrankenPHP
 RUN apt-get update && apt-get install -y \
-  php${PHP_VERSION}-dev \
-  libbrotli-dev \
-  build-essential \
-  git \
-  pkg-config \
-  libcap2-bin \
-  php-cli \
-  php-curl \
-  php-mbstring \
-  unzip \
-  && rm -rf /var/lib/apt/lists/*
+    libbrotli-dev \
+    php-dev \
+    pkg-config \
+    build-essential \
+    libcap2-bin \
+    curl \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Clone FrankenPHP
 WORKDIR /src

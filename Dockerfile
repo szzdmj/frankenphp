@@ -18,11 +18,14 @@ ENV XDG_CONFIG_HOME=/config
 ENV XDG_DATA_HOME=/data
 EXPOSE 8085 2019
 
-# Stage 2: Build FrankenPHP
-FROM golang:1.24 AS builder
-ENV PHP_VERSION=8.3
+#############################
+# Stage 2: Build FrankenPHP (Debug Version)
+#############################
+FROM golang:1.24-alpine AS builder
+
 WORKDIR /go/src/app
 
+# Copy only go mod files first for caching
 COPY go.mod go.sum ./
 RUN go mod download
 
@@ -30,26 +33,37 @@ WORKDIR /go/src/app/caddy
 COPY caddy/go.mod caddy/go.sum ./
 RUN go mod download
 
+# Copy full source
 WORKDIR /go/src/app
 COPY . .
 
-# Ensure the script exists and is executable
-RUN chmod +x ./caddy/frankenphp/go.sh && ls -l ./caddy/frankenphp/go.sh
+# ✅ Confirm go.sh exists and is executable
+RUN set -eux && \
+    ls -l ./caddy/frankenphp/go.sh && \
+    head -n 10 ./caddy/frankenphp/go.sh && \
+    chmod +x ./caddy/frankenphp/go.sh
 
+# ✅ Set environment variables safely
+ENV PHP_VERSION=8.3 \
+    CGO_CFLAGS="-DFRANKENPHP_VERSION=dev $PHP_CFLAGS" \
+    CGO_CPPFLAGS=$PHP_CPPFLAGS \
+    CGO_LDFLAGS="-L/usr/local/lib -lssl -lcrypto -lreadline -largon2 -lcurl -lonig -lz $PHP_LDFLAGS"
+
+# ✅ Run build script separately to expose errors
 WORKDIR /go/src/app/caddy/frankenphp
 
-ENV CGO_CFLAGS="-DFRANKENPHP_VERSION=dev"
-ENV CGO_CPPFLAGS=""
-ENV CGO_LDFLAGS="-L/usr/local/lib -lssl -lcrypto -lreadline -largon2 -lcurl -lonig -lz"
-
-# BUILD
 RUN set -eux && \
     GOBIN=/usr/local/bin \
-    ./go.sh install -ldflags "-w -s -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP dev PHP $PHP_VERSION Caddy'" -buildvcs=true && \
-    setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp && \
-    cp Caddyfile /etc/frankenphp/Caddyfile && \
-    frankenphp version && \
-    frankenphp build-info
+    ../../caddy/frankenphp/go.sh install \
+      -ldflags "-w -s -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP dev PHP ${PHP_VERSION} Caddy'" \
+      -buildvcs=true
+
+# ✅ Run extra steps separately
+RUN setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp
+
+RUN cp Caddyfile /etc/frankenphp/Caddyfile
+
+RUN frankenphp version && frankenphp build-info
 
 # Stage 3: Final
 FROM base AS final

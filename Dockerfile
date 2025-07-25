@@ -23,10 +23,17 @@ WORKDIR /src
 RUN git clone --recursive https://github.com/dunglas/frankenphp.git .
 
 # Build
+# Set working directory
 WORKDIR /src/caddy/frankenphp
-RUN ./go.sh install \
-  -ldflags "-w -s -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP dev PHP ${PHP_VERSION} Caddy'" \
-  -buildvcs=true
+
+# Copy source files (including go.sh and Caddyfile)
+COPY . .
+
+# Ensure go.sh is executable and run the install
+RUN chmod +x ./go.sh && \
+    ./go.sh install \
+      -ldflags "-w -s -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP dev PHP ${PHP_VERSION:-8.3} Caddy'" \
+      -buildvcs=true
 
 # ----------------------------
 # Stage 2: Final image

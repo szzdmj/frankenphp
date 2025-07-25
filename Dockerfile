@@ -86,4 +86,12 @@ RUN set -eux && \
 FROM base AS final
 
 COPY --from=builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
-COPY
+COPY --from=builder /usr/local/lib/libwatcher* /usr/local/lib/
+
+RUN setcap cap_net_bind_service=+ep /usr/local/bin/frankenphp && \
+    frankenphp version && \
+    frankenphp build-info
+
+CMD ["frankenphp", "--config", "/etc/frankenphp/Caddyfile", "--adapter", "caddyfile"]
+
+HEALTHCHECK CMD curl -f http://localhost:2019/metrics || exit 1

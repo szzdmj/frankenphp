@@ -51,7 +51,7 @@ EXPOSE 2019
 #############################
 # Stage 2: Build FrankenPHP
 #############################
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /go/src/app
 

@@ -30,6 +30,7 @@ WORKDIR /src/caddy/frankenphp
 COPY . .
 
 # Ensure go.sh is executable and run the install
+RUN ls -al && cat ./go.sh | head -n 20
 RUN chmod +x ./go.sh && \
     ./go.sh install \
       -ldflags "-w -s -X 'github.com/caddyserver/caddy/v2.CustomVersion=FrankenPHP dev PHP ${PHP_VERSION:-8.3} Caddy'" \

@@ -1,6 +1,6 @@
 import { MyContainer } from "./container";
 
-// 必须默认导出 Durable Object 绑定
+// 👇 Cloudflare 会自动从默认导出中获取 Durable Object
 export default {
-  MyContainer
+  MyContainer,
 };

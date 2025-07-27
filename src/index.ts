@@ -1,21 +1,25 @@
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
-import type { DurableObjectNamespace } from '@cloudflare/workers-types';
+import { Router } from "hono";
+import { createContainerWorker, Container } from "@cloudflare/containers";
 
-export interface Env {
-  MyContainer: DurableObjectNamespace;
-  KV: KVNamespace;
+// Durable Object 类
+export class MyContainer {
+  fetch(request: Request) {
+    return new Response("Hello from Durable Object container", { status: 200 });
+  }
 }
 
-export default {
-  async fetch(request: Request, env: Env) {
-    // 静态资源优先
-    try {
-      return await getAssetFromKV(request, { cacheControl: { bypassCache: true } });
-    } catch {
-      // 转发到 Container Durable Object
-      const id = env.MyContainer.idFromName('instance');
-      const stub = env.MyContainer.get(id);
-      return stub.fetch(request);
-    }
-  }
-};
+// 导出 Durable Object
+export { MyContainer };
+
+// 创建 container worker
+const app = new Router();
+
+app.get("/", (c) => c.text("Hello world"));
+
+export default createContainerWorker({
+  container: new Container({
+    namespace: MY_CONTAINER, // 与 wrangler binding 一致
+    maxConcurrency: 10
+  }),
+  router: app
+});

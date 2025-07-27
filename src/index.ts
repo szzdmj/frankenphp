@@ -2,7 +2,7 @@ import { Container, loadBalance, getContainer } from "@cloudflare/containers";
 import { Hono } from "hono";
 
 export class MyContainer extends Container {
-  defaultPort = 8085;
+  defaultPort = 8080;
   sleepAfter = "2m";
   envVars = {
     MESSAGE: "I was passed in via the container class!",

@@ -1,14 +1,21 @@
-import { Container } from "@cloudflare/containers";
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+import type { DurableObjectNamespace } from '@cloudflare/workers-types';
 
-export class MyContainer extends Container {
-  async fetch(request: Request): Promise<Response> {
-    return await this.run(request);
-  }
+export interface Env {
+  MyContainer: DurableObjectNamespace;
+  KV: KVNamespace;
 }
 
-// 👇 显式导出 Durable Object 类（这是 ES Module Worker 关键）
 export default {
-  fetch(request: Request, env: Env, ctx: ExecutionContext) {
-    return new Response("FrankenPHP container is set up!");
+  async fetch(request: Request, env: Env) {
+    // 静态资源优先
+    try {
+      return await getAssetFromKV(request, { cacheControl: { bypassCache: true } });
+    } catch {
+      // 转发到 Container Durable Object
+      const id = env.MyContainer.idFromName('instance');
+      const stub = env.MyContainer.get(id);
+      return stub.fetch(request);
+    }
   }
-}
+};

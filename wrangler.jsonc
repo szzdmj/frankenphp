@@ -8,10 +8,10 @@
   "observability": {
     "enabled": true
   },
-"containers": [
+  "containers": [
     {
       "class_name": "MyContainer",
-      "image": "./Dockerfile",
+      "image": "./Dockerfile", // 本地构建，wrangler 会自动打包上传
       "max_instances": 10,
       "name": "frankenphp"
     }
@@ -21,8 +21,8 @@
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
-  ]
-"kv_namespaces": [
+  ],
+  "kv_namespaces": [
     {
       "binding": "KV",
       "id": "afdb066fcc2146c0bab30d8ca805a7fc"
@@ -30,5 +30,5 @@
   ],
   "assets": {
     "directory": "./Static_Creation/public"
-  },
+  }
 }

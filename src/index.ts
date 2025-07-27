@@ -1,25 +1,23 @@
 import { Router } from "hono";
 import { createContainerWorker, Container } from "@cloudflare/containers";
 
-// Durable Object 类
+// 定义 Durable Object
 export class MyContainer {
   fetch(request: Request) {
     return new Response("Hello from Durable Object container", { status: 200 });
   }
 }
 
-// 导出 Durable Object
-export { MyContainer };
+// 路由设置（可选）
+const router = new Router();
 
-// 创建 container worker
-const app = new Router();
+router.get("/", (c) => c.text("Hello from Worker"));
 
-app.get("/", (c) => c.text("Hello world"));
-
+// 默认导出 container worker
 export default createContainerWorker({
   container: new Container({
-    namespace: MY_CONTAINER, // 与 wrangler binding 一致
+    namespace: MY_CONTAINER,
     maxConcurrency: 10
   }),
-  router: app
+  router
 });

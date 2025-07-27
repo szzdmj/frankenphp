@@ -4,7 +4,22 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-07-17",
   "compatibility_flags": ["nodejs_compat"],
-  "migrations": [
+  "build": {
+    "command": "npm install hono @cloudflare/containers"
+  },
+  "rules": [
+    { "type": "ESModule", "globs": ["**/*.ts"] }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MY_CONTAINER",
+        "class_name": "MyContainer"
+      }
+    ]
+  },
+  "placement": {
+    "mode": "smart""migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]

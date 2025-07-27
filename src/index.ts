@@ -1,6 +1,4 @@
 import { MyContainer } from "./container";
 
-// 👇 Cloudflare 会自动从默认导出中获取 Durable Object
-export default {
-  MyContainer,
-};
+// 必须这样导出 Durable Object 类，Cloudflare 才能识别
+export { MyContainer };

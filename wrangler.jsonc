@@ -8,7 +8,7 @@
   "observability": {
     "enabled": true
   },
-  "containers": [
+"containers": [
     {
       "class_name": "MyContainer",
       "image": "./Dockerfile",
@@ -16,14 +16,6 @@
       "name": "frankenphp"
     }
   ],
-  "durable_objects": {
-    "bindings": [
-      {
-        "class_name": "MyContainer",
-        "name": "MY_CONTAINER"
-      }
-    ]
-  },
   "migrations": [
     {
       "tag": "v1",
@@ -37,6 +29,6 @@
     }
   ],
   "assets": {
-    "directory": "./Static_Creation"
+    "directory": "./Static_Creation/public"
   },
 }

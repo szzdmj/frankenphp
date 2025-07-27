@@ -1,15 +1,11 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "frankenphp",
   "main": "src/index.ts",
   "compatibility_date": "2025-07-17",
   "compatibility_flags": ["nodejs_compat"],
-  "build": {
-    "command": "npm install hono @cloudflare/containers"
+  "observability": {
+    "enabled": true
   },
-  "rules": [
-    { "type": "ESModule", "globs": ["**/*.ts"] }
-  ],
   "durable_objects": {
     "bindings": [
       {
@@ -19,26 +15,12 @@
     ]
   },
   "placement": {
-    "mode": "smart""migrations": [
+    "mode": "smart"   // ✅ 注意：这里后面需要加逗号
+  },
+  "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
-    }
-  ],
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "MY_CONTAINER",
-        "class_name": "MyContainer"
-      }
-    ]
-  },
-  "containers": [
-    {
-      "name": "frankenphp",
-      "class_name": "MyContainer",
-      "image": "./Dockerfile",
-      "max_instances": 10
     }
   ],
   "kv_namespaces": [

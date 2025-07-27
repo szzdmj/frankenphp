@@ -1,4 +1,9 @@
 import { MyContainer } from "./container";
 
-// 必须这样导出 Durable Object 类，Cloudflare 才能识别
-export { MyContainer };
+export { MyContainer }; // durable object 必须这么导出
+
+export default {
+  async fetch(request: Request): Promise<Response> {
+    return new Response("Worker is live. Durable Object will respond via fetch().");
+  }
+};

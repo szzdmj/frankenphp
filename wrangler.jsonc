@@ -4,37 +4,34 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-07-17",
   "compatibility_flags": ["nodejs_compat"],
-  "observability": { "enabled": true },
-
-  "durable_objects": {
-    "bindings": [
-      { "name": "MyContainer", "class_name": "MyContainer" }
-    ]
-  },
-
-  "containers": [
-    {
-      "class_name": "MyContainer",
-      "image": "./Dockerfile",
-      "name": "frankenphp-container",
-      "max_instances": 2
-    }
-  ],
-
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
-
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MY_CONTAINER",
+        "class_name": "MyContainer"
+      }
+    ]
+  },
+  "containers": [
+    {
+      "name": "frankenphp",
+      "class_name": "MyContainer",
+      "image": "./Dockerfile",
+      "max_instances": 10
+    }
+  ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "afdb066fcc2146c0bab30d8ca805a7fc
+      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
     }
   ],
-
   "assets": {
     "directory": "./Static_Creation/public"
   }

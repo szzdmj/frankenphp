@@ -2,19 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "frankenphp",
   "main": "src/index.ts",
-  "compatibility_date": "2025-07-17",
+  "compatibility_date": "2025-07-27",
   "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
-  },
-  "containers": [
-    {
-      "class_name": "MyContainer",
-      "image": "./Static_Creation/static-build.Dockerfile",
-      "max_instances": 10,
-      "name": "frankenphp"
-    }
-  ],
+
+  // Durable Object 容器绑定
   "durable_objects": {
     "bindings": [
       {
@@ -23,12 +14,34 @@
       }
     ]
   },
+
+  // Containers 镜像配置：本地 Dockerfile 构建
+  "containers": [
+    {
+      "class_name": "MyContainer",
+      "image": "./Static_Creation/static-build.Dockerfile", // 本地构建镜像
+      "name": "frankenphp",
+      "max_instances": 10
+    }
+  ],
+
+  // 可选：数据迁移记录（首次部署需要）
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
+
+  // 可选：KV 命名空间（如果你使用了 KV）
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
+    }
+  ],
+
+  // 公开静态资源目录（如 index.php 示例文件）
   "assets": {
     "directory": "./Static_Creation/public"
   }

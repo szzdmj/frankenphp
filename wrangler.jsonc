@@ -30,4 +30,13 @@
       "new_classes": ["MyContainer"]
     }
   ]
+"kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
+    }
+  ],
+  "assets": {
+    "directory": "./Static_Creation"
+  },
 }

@@ -1,8 +1,8 @@
-import { createContainerWorker, Container } from "@cloudflare/containers";
+import { Container } from "@cloudflare/containers";
 
-// 简单容器类，实现必须和 wrangler.jsonc 中的 class_name 一致
-export class MyContainer extends Container {}
-
-export default {
-  fetch: createContainerWorker(MyContainer)
-};
+export class MyContainer extends Container {
+  async fetch(request: Request): Promise<Response> {
+    // 所有请求都转发给容器（Docker 镜像）
+    return await this.run(request);
+  }
+}

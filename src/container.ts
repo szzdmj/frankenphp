@@ -1,4 +1,6 @@
-import { serve } from "@cloudflare/containers";
+import { Container } from "@cloudflare/containers";
+
+export class MyContainer extends Container {}
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {

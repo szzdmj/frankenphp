@@ -9,7 +9,7 @@
 	encode zstd gzip
 
 	# PHP程序位置，这里请根据实际的根目录修改
-	root * /public/
+	root * ./
 	cache
 	
 	# 返回空页面

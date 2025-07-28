@@ -1,9 +1,11 @@
-import { Hono } from "hono";
-import { createFactory } from "@cloudflare/containers";
-import { MyContainer, handleContainerRequest } from "./container";
+export default {
+async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+const id = env.MY_CONTAINER.idFromName("default");
+const stub = env.MY_CONTAINER.get(id);
+return await stub.fetch(request);
+}
+};
 
-const app = new Hono();
-
-app.use("/frankenphp/*", createFactory(MyContainer, handleContainerRequest));
-
-export default app;
+interface Env {
+MY_CONTAINER: DurableObjectNamespace;
+}

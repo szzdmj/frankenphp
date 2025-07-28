@@ -27,7 +27,8 @@
 
   "containers": [
     {
-      "image": "./Static_Creation/static-build.Dockerfile"
+      "image": "./Static_Creation/static-build.Dockerfile",
+      "class_name": "MyContainer"
     }
   ]
 }

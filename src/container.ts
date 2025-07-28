@@ -1,7 +1,4 @@
-// src/container.ts
-
-export class MyContainer {
-  async fetch(request: Request): Promise<Response> {
-    return new Response("Hello from FrankenPHP container!");
-  }
-}
+// container.ts
+import { MyContainer } from "./container-class"; // 如果您将容器逻辑保存在 container-class.ts
+// 此处导出 Durable Object class
+export { MyContainer };

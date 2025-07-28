@@ -1,31 +1,36 @@
 {
   "name": "frankenphp",
   "compatibility_date": "2025-07-01",
-  "main": "src/container.ts",
 
-  // Durable Object 绑定（逻辑名称与类名对应）
+  // 入口文件改为 index.ts
+  "main": "src/index.ts",
+
+  // Durable Object 绑定声明
   "durable_objects": {
     "bindings": [
       {
-        "name": "frankenphp_container", // 用于 Worker 内访问的绑定名（env.frankenphp_container）
-        "class_name": "MyContainer"     // DO 类名（在 container.ts 中定义）
+        "name": "frankenphp_container",
+        "class_name": "MyContainer"
       }
     ]
   },
 
-  // Durable Object 的 migrations（必须指定）
+  // 必须添加 migrations，否则部署失败
   "migrations": [
     {
-      "tag": "v1",                     // 任意唯一 tag（部署后不要随意修改）
-      "new_classes": ["MyContainer"]   // 注册的新 DO 类
+      "tag": "v1",
+      "new_classes": ["MyContainer"]
     }
   ],
 
-  // Containers 配置（必须为数组）
+  // Cloudflare Containers 配置（使用 image 字段和 class_name）
   "containers": [
     {
-      "binding": "frankenphp_container", // 绑定到哪个 DO（要与 durable_objects.name 一致）
-      "dockerfile": "./Static_Creation/static-build.Dockerfile"
+      "binding": "frankenphp_container",
+      "class_name": "MyContainer",
+      "image": {
+        "dockerfile": "./Static_Creation/static-build.Dockerfile"
+      }
     }
   ]
 }

@@ -1,16 +1,15 @@
-import { handleContainerRequest } from "./container";
+import { MyContainer, handleContainerRequest } from "./container";
+
+// 必须导出 Durable Object 类名
+export { MyContainer };
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     try {
-      const url = new URL(request.url);
-      console.log(`📥 Request pathname: ${url.pathname}`);
-
-      // 所有请求统一转发给 DO
       return await handleContainerRequest(request, env, ctx);
-    } catch (e: any) {
-      console.error("❌ Worker crashed with error:", e);
+    } catch (err) {
+      console.error("Fatal error in fetch:", err);
       return new Response("Internal Error", { status: 500 });
     }
-  }
+  },
 };

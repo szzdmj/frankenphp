@@ -28,6 +28,6 @@
   "vars": {},
 
   "containers": {
-    "entrypoint": "./Static_Creation/Dockerfile"
+     "image":  "./Static_Creation/Dockerfile"
   }
 }

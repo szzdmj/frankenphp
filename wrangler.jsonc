@@ -1,16 +1,9 @@
 {
   "name": "frankenphp",
-  "compatibility_date": "2025-07-28",
+  "compatibility_date": "2024-06-01",
   "main": "src/index.ts",
-  "build": {
-    "upload": {
-      "format": "directory",
-      "dir": "./Static_Creation/public"
-    }
-  },
-  "ai": {
-    "binding": "AI"
-  },
+  "compatibility_flags": ["nodejs_compat"],
+
   "durable_objects": {
     "bindings": [
       {
@@ -19,10 +12,16 @@
       }
     ]
   },
-  "kv_namespaces": [
+
+  "migrations": [
     {
-      "binding": "KV",
-      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
+      "tag": "v1",
+      "new_classes": ["MyContainer"]
     }
-  ]
+  ],
+
+  // 删除 upload
+  // "build": {
+  //   "upload": { ... } ❌ 不要这个
+  // }
 }

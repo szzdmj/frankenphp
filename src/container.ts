@@ -1,11 +1,21 @@
-export class MyContainer {
-  async fetch(request: Request): Promise<Response> {
-    // 這裡可以根據 URL 路徑自訂邏輯，例如處理 POST 請求、回應靜態頁面等
-    return new Response("Hello from MyContainer!");
-  }
-}
+import { createContainer } from "@cloudflare/containers";
 
-// 可在 index.ts 中透過 createFactory 將此函式當作 handler 傳入
-export async function handleContainerRequest(request: Request, controller: MyContainer): Promise<Response> {
-  return controller.fetch(request);
-}
+export default {
+async fetch(request: Request) {
+return new Response("MyContainer is alive", {
+headers: { "content-type": "text/plain" },
+});
+},
+};
+
+export const MyContainer = createContainer({
+// 默认端口 8080，会读取容器内 /public/Caddyfile
+// Durable Object will proxy requests here
+// 也支持 process: ["frankenphp", "-c", "/public/Caddyfile"]
+});
+
+📄 同时，确保 src/index.ts 正确绑定：
+
+src/index.ts:
+
+expo

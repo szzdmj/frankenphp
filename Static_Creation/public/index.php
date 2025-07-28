@@ -1,5 +1,5 @@
 <?php
-
+echo "✅ Hello from FrankenPHP via Caddy!";
 require('common.inc.php');
 require(APPDIR.'/config.inc.php');
 require(APPDIR.'/include/func.inc.php');

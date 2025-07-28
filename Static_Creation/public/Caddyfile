@@ -1,25 +1,5 @@
 :8080 {
 	root * /public
-
-	php {
-		root /public
-	}
-
-	encode gzip
-
-	log {
-		output stdout
-		format console
-	}
-
-	@php path *.php
-	handle @php {
-		header Content-Type text/html
-		rewrite * {path}
-		php
-	}
-
-	handle {
-		file_server
-	}
+	php_server
+	file_server
 }

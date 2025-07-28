@@ -21,7 +21,7 @@
     {
       "name": "frankenphp",
       "class_name": "MyContainer",
-      "image": "./Dockerfile"
+      "image": "./Static_Creation/static-build.Dockerfile"
     }
   ],
 

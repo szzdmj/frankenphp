@@ -1,22 +1,21 @@
-// src/container.ts
-
 export class MyContainer {
-  constructor(readonly state: DurableObjectState, readonly env: any) {}
+  state: DurableObjectState;
 
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-
-    // 简单示例：尝试从 Caddyfile 提供的静态文件中返回内容
-    if (url.pathname.startsWith("/index1.html")) {
-      return fetch("http://localhost:80/index1.html", {
-        method: request.method,
-        headers: request.headers,
-      });
-    }
-
-    // 默认返回信息
-    return new Response("Hello from Durable Object!", {
-      headers: { "Content-Type": "text/plain" },
-    });
+  constructor(state: DurableObjectState, env: any) {
+    this.state = state;
   }
+
+  async fetch(request: Request) {
+    console.log("→ Durable Object received request");
+    return fetch(request); // 转发请求给容器实例
+
+
+
+  }
+}
+
+export async function handleContainerRequest(request: Request, env: any) {
+  const id = env.MY_CONTAINER.idFromName("singleton");
+  const stub = env.MY_CONTAINER.get(id);
+  return stub.fetch(request);
 }

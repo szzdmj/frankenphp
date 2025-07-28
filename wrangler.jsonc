@@ -1,10 +1,15 @@
 {
   "name": "frankenphp",
+  "compatibility_date": "2025-07-28",
   "main": "src/index.ts",
-  "compatibility_date": "2025-07-17",
-  "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
+  "build": {
+    "upload": {
+      "format": "directory",
+      "dir": "./Static_Creation/public"
+    }
+  },
+  "ai": {
+    "binding": "AI"
   },
   "durable_objects": {
     "bindings": [
@@ -14,22 +19,10 @@
       }
     ]
   },
-  "placement": {
-    "mode": "smart"   // ✅ 注意：这里后面需要加逗号
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["MyContainer"]
-    }
-  ],
   "kv_namespaces": [
     {
       "binding": "KV",
       "id": "afdb066fcc2146c0bab30d8ca805a7fc"
     }
-  ],
-  "assets": {
-    "directory": "./Static_Creation/public"
-  }
+  ]
 }

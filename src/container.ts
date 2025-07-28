@@ -1,21 +1,11 @@
 export class MyContainer {
-  state: DurableObjectState;
-
-  constructor(state: DurableObjectState, env: any) {
-    this.state = state;
-  }
-
-  async fetch(request: Request) {
-    console.log("→ Durable Object received request");
-    return fetch(request); // 转发请求给容器实例
-
-
-
+  async fetch(request: Request): Promise<Response> {
+    // 這裡可以根據 URL 路徑自訂邏輯，例如處理 POST 請求、回應靜態頁面等
+    return new Response("Hello from MyContainer!");
   }
 }
 
-export async function handleContainerRequest(request: Request, env: any) {
-  const id = env.MY_CONTAINER.idFromName("singleton");
-  const stub = env.MY_CONTAINER.get(id);
-  return stub.fetch(request);
+// 可在 index.ts 中透過 createFactory 將此函式當作 handler 傳入
+export async function handleContainerRequest(request: Request, controller: MyContainer): Promise<Response> {
+  return controller.fetch(request);
 }

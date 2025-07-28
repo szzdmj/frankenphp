@@ -2,10 +2,10 @@
   "name": "frankenphp",
   "compatibility_date": "2025-07-01",
 
-  // 主入口导出 Durable Object 类
+  // 指定主导出：你的 Durable Object 所在文件
   "main": "src/index.ts",
 
-  // Durable Object 绑定
+  // Durable Object 绑定配置
   "durable_objects": {
     "bindings": [
       {
@@ -15,7 +15,7 @@
     ]
   },
 
-  // 必须添加 migrations
+  // migrations 不可省略（初次部署至少一项）
   "migrations": [
     {
       "tag": "v1",
@@ -23,13 +23,11 @@
     }
   ],
 
-  // 正确格式的 containers 配置：没有 binding！
+  // ✅ 正确写法（注意 image 不是对象！而是字符串路径）
   "containers": [
     {
       "class_name": "MyContainer",
-      "image": {
-        "dockerfile": "./Static_Creation/static-build.Dockerfile"
-      }
+      "image": "./Static_Creation/static-build.Dockerfile"
     }
   ]
 }

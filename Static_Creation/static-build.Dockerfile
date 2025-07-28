@@ -12,9 +12,14 @@ RUN apt-get update && apt-get install -y \
     php-pdo \
     php-gd \
     php-opcache \
-    && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/*
 
-COPY ./frankenphp /usr/bin/frankenphp
+COPY ./ /usr/bin/frankenphp
 WORKDIR /app/public
 
-CMD ["frankenphp", "--config", "Caddyfile"]
+COPY ./public /app/public
+COPY ./public/Caddyfile /etc/caddy/Caddyfile
+
+EXPOSE 8080
+
+CMD ["/usr/bin/frankenphp", "--config", "/etc/caddy/Caddyfile"]

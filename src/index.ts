@@ -1,10 +1,10 @@
-{
 import { MyContainer, handleContainerRequest } from "./container";
+import { createFactory } from "@cloudflare/containers";
+import { Hono } from "hono";
 
-export { MyContainer };
+const app = new Hono();
 
-export default {
-  async fetch(request: Request, env: any, ctx: ExecutionContext) {
-    return handleContainerRequest(request, env);
-  }
-};
+// 所有 /frankenphp/* 的請求將被轉發至 MyContainer 實例中
+app.use("/frankenphp/*", createFactory(MyContainer, handleContainerRequest));
+
+export default app;

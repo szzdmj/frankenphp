@@ -1,17 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
-IMAGE_NAME="ghcr.io/szzdmj/shenzhou-app:latest"
+# 编译 linux 下可用的 FrankenPHP 二进制
+echo "▶️ 构建 frankenphp..."
 
-echo "🔄 Building Docker image: $IMAGE_NAME"
-docker build -t "$IMAGE_NAME" -f static-build.Dockerfile .
+GOOS=linux CGO_ENABLED=1 xcaddy build --with github.com/dunglas/frankenphp
 
-echo "🚀 Pushing to GitHub Container Registry"
-docker push "$IMAGE_NAME"
-
-echo "🧼 Stopping old container if exists..."
-docker stop running_shenzhou 2>/dev/null || true
-docker rm running_shenzhou 2>/dev/null || true
-
-echo "🟢 Starting a new container..."
-docker run -d --name running_shenzhou -p 80:80 -p 443:443 "$IMAGE_NAME"
+echo "✅ 构建完成: ./frankenphp"

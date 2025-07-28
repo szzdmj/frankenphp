@@ -1,45 +1,22 @@
 {
-  // 项目名称
   "name": "frankenphp",
-
-  // Worker 平台兼容日期
-  "compatibility_date": "2024-06-01",
-
-  // 启用 Node.js 兼容性（某些模块依赖）
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-
-  // 入口脚本：你的 Durable Object 类所在文件
+  "compatibility_date": "2025-07-01",
   "main": "src/container.ts",
 
-  // Durable Object 绑定设置
+  // Durable Object 映射配置
   "durable_objects": {
     "bindings": [
       {
-        // Worker 内部可用的绑定变量名
         "name": "frankenphp_container",
-        // 与 container.ts 中的类名一致
         "class_name": "MyContainer"
       }
     ]
   },
 
-  // Durable Object 版本迁移配置
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["MyContainer"]
+  // Container 配置
+  "containers": {
+    "frankenphp_container": {
+      "dockerfile": "./Static_Creation/static-build.Dockerfile"
     }
-  ],
-
-  // Cloudflare Containers 配置
-  "containers": [
-    {
-      // 指定 Dockerfile 路径（必须是文件）
-      "image": "./Static_Creation/static-build.Dockerfile",
-      // 使用的 DO 类
-      "class_name": "MyContainer"
-    }
-  ]
+  }
 }

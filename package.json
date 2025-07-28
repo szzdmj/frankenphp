@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "hono": "^4.0.0",
+    "@cloudflare/containers": "^0.6.1"
+  }
+}

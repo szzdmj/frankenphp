@@ -10,7 +10,7 @@
 
   "upload": {
     "format": "modules",
-    "dir": "./Static_Creation/public"
+    "dir": "./Static_Creation/static-build.Dockerfile"
   },
 
   "main": "src/container.ts",

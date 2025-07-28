@@ -1,16 +1,7 @@
-import { Container } from "@cloudflare/containers";
+// src/container.ts
 
-export class MyContainer extends Container {}
-const id = env.frankenphp_container.idFromName("main");
-export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    return await serve({
-      container: {
-        entrypoint: [],
-      },
-      request,
-      env,
-      ctx,
-    });
-  },
-};
+export class MyContainer {
+  async fetch(request: Request): Promise<Response> {
+    return new Response("Hello from FrankenPHP container!");
+  }
+}

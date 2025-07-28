@@ -1,6 +1,9 @@
 {
   "name": "frankenphp",
-  "main": "src/index.ts", // 指向入口 Worker 脚本
+  "compatibility_date": "2024-06-01",
+  "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+
   "durable_objects": {
     "bindings": [
       {
@@ -9,21 +12,16 @@
       }
     ]
   },
+
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
-  "compatibility_flags": ["nodejs_compat"], // 替代已弃用的 node_compat
-  "containers": [
-    {
-      "class_name": "PhpApp",
-      "dockerfile": "./Static_Creation/static-build.Dockerfile",
-      "binding": "MY_CONTAINER"
-    }
-  ],
-  "assets": {
-    "directory": "./Static_Creation/public"
-  }
+
+  // 删除 upload
+  // "build": {
+  //   "upload": { ... } ❌ 不要这个
+  // }
 }

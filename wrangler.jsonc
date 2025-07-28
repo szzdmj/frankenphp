@@ -1,19 +1,23 @@
 {
   "name": "frankenphp",
-  "compatibility_date": "2024-05-01",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2024-06-01",
 
-  "main": "src/container.ts",
+  // ✅ Node.js 兼容性推荐方式
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
 
+  // ✅ Durable Object 配置（使用新名字，避免冲突）
   "durable_objects": {
     "bindings": [
       {
-        "name": "MY_CONTAINER",
+        "name": "frankenphp_container", // 👈 避免和旧 DO 冲突
         "class_name": "MyContainer"
       }
     ]
   },
 
+  // ✅ 必须提供 migrations 否则 DO 无法注册
   "migrations": [
     {
       "tag": "v1",
@@ -21,14 +25,12 @@
     }
   ],
 
-  "build": {
-    "command": "npm install hono @cloudflare/containers"
-  },
-
+  // ✅ containers 字段必须为数组
   "containers": [
     {
-      "image": "./Static_Creation/static-build.Dockerfile",
-      "class_name": "MyContainer"
+      "image": "./Static_Creation", // 👈 指向目录（不是 Dockerfile 文件）
+      "service_binding": "APP",     // 👈 container 服务名（在 src/container.ts 中绑定）
+      "class_name": "MyContainer"   // 👈 与上面 DO 的 class_name 保持一致
     }
   ]
 }

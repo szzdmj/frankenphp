@@ -2,32 +2,36 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "frankenphp",
   "main": "src/index.ts",
-  "main_type": "module",
   "compatibility_date": "2025-07-17",
   "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true
+  "observability": { "enabled": true },
+
+  // 必须声明 Durable Object
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MY_CONTAINER",
+        "class_name": "MyContainer"
+      }
+    ]
   },
+
+  // containers 额外声明
   "containers": [
     {
+      "name": "frankenphp",
       "class_name": "MyContainer",
-      "image": "./Dockerfile",
-      "max_instances": 10,
-      "name": "frankenphp"
+      "image": "./Dockerfile"
     }
   ],
+
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
-  "kv_namespaces": [
-    {
-      "binding": "KV",
-      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
-    }
-  ],
+
   "assets": {
     "directory": "./Static_Creation/public"
   }

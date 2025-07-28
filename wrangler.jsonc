@@ -2,10 +2,10 @@
   "name": "frankenphp",
   "compatibility_date": "2025-07-01",
 
-  // 入口文件改为 index.ts
+  // 正确主入口：index.ts 统一导出 Durable Object
   "main": "src/index.ts",
 
-  // Durable Object 绑定声明
+  // Durable Object 声明
   "durable_objects": {
     "bindings": [
       {
@@ -15,7 +15,7 @@
     ]
   },
 
-  // 必须添加 migrations，否则部署失败
+  // 初始 migration 版本
   "migrations": [
     {
       "tag": "v1",
@@ -23,7 +23,7 @@
     }
   ],
 
-  // Cloudflare Containers 配置（使用 image 字段和 class_name）
+  // Cloudflare Containers 声明，使用 Dockerfile 构建
   "containers": [
     {
       "binding": "frankenphp_container",

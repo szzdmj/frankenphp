@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { handle } from '@cloudflare/containers'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { MyContainer } from './container'
 
@@ -31,10 +30,10 @@ app.get('/', async (c) => {
   return resp
 })
 
-// 静态资源（如 robots.txt, .css, .js 等）
+// 静态资源（robots.txt、.js、.css 等）
 app.get('*', serveStatic({ root: './public' }))
 
-// Durable Object 路由（仍保留）
+// Durable Object 示例路由
 app.get('/do/:id', async (c) => {
   const id = c.req.param('id')
   const stub = c.env.MY_CONTAINER.get(c.env.MY_CONTAINER.idFromName(id))
@@ -42,10 +41,7 @@ app.get('/do/:id', async (c) => {
   return resp
 })
 
-// 处理容器请求（默认由 Containers 模块提供）
+// 默认导出 fetch
 export default {
   fetch: app.fetch,
-  ...handle({
-    MyContainer,
-  }),
 }

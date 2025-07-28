@@ -9,7 +9,6 @@ export type Env = {
 
 const app = new Hono<{ Bindings: Env }>()
 
-// 所有 .php 请求 → 代理到容器
 app.all('/*.php', async (c) => {
   const path = c.req.path
   const url = `https://hello-containers.xianyue5165.workers.dev${path}`
@@ -21,7 +20,6 @@ app.all('/*.php', async (c) => {
   return resp
 })
 
-// 根路径 `/` 显式代理到 index.php
 app.get('/', async (c) => {
   const url = 'https://hello-containers.xianyue5165.workers.dev/index.php'
   const resp = await fetch(url, {
@@ -30,10 +28,8 @@ app.get('/', async (c) => {
   return resp
 })
 
-// 静态资源（robots.txt、.js、.css 等）
 app.get('*', serveStatic({ root: './public' }))
 
-// Durable Object 示例路由
 app.get('/do/:id', async (c) => {
   const id = c.req.param('id')
   const stub = c.env.MY_CONTAINER.get(c.env.MY_CONTAINER.idFromName(id))
@@ -41,7 +37,9 @@ app.get('/do/:id', async (c) => {
   return resp
 })
 
-// 默认导出 fetch
 export default {
   fetch: app.fetch,
 }
+
+// ✅ 关键：导出 Durable Object 实现
+export { MyContainer }

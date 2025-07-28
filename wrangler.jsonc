@@ -1,33 +1,29 @@
 {
   "name": "frankenphp",
-  "compatibility_date": "2025-07-01",
-
-  // 指定主导出：你的 Durable Object 所在文件
-  "main": "src/index.ts",
-
-  // Durable Object 绑定配置
+  "main": "src/index.ts", // 指向入口 Worker 脚本
   "durable_objects": {
     "bindings": [
       {
-        "name": "frankenphp_container",
+        "name": "MY_CONTAINER",
         "class_name": "MyContainer"
       }
     ]
   },
-
-  // migrations 不可省略（初次部署至少一项）
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
-
-  // ✅ 正确写法（注意 image 不是对象！而是字符串路径）
+  "compatibility_flags": ["nodejs_compat"], // 替代已弃用的 node_compat
   "containers": [
     {
-      "class_name": "MyContainer",
-      "image": "./Static_Creation/static-build.Dockerfile"
+      "class_name": "PhpApp",
+      "dockerfile": "./Static_Creation/static-build.Dockerfile",
+      "binding": "MY_CONTAINER"
     }
-  ]
+  ],
+  "assets": {
+    "directory": "./Static_Creation/public"
+  }
 }

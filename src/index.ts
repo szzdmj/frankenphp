@@ -1,40 +1,51 @@
 import { Hono } from 'hono'
+import { handle } from '@cloudflare/containers'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { MyContainer } from './container'
 
 export type Env = {
-	MY_CONTAINER: DurableObjectNamespace
-	KV: KVNamespace
+  MY_CONTAINER: DurableObjectNamespace
+  KV: KVNamespace
 }
 
 const app = new Hono<{ Bindings: Env }>()
 
-// ✅ Middleware：为 .php 设置 Content-Type = text/html
-app.use('*', async (c, next) => {
-	await next()
-	const path = c.req.path
-	if (path.endsWith('.php')) {
-		c.header('Content-Type', 'text/html')
-	}
+// 所有 .php 请求 → 代理到容器
+app.all('/*.php', async (c) => {
+  const path = c.req.path
+  const url = `https://hello-containers.xianyue5165.workers.dev${path}`
+  const resp = await fetch(url, {
+    method: c.req.method,
+    headers: c.req.raw.headers,
+    body: c.req.raw.body,
+  })
+  return resp
 })
 
-// ✅ 静态首页重定向 / → /index.php
+// 根路径 `/` 显式代理到 index.php
 app.get('/', async (c) => {
-	return serveStatic({ path: './index.php' })(c)
+  const url = 'https://hello-containers.xianyue5165.workers.dev/index.php'
+  const resp = await fetch(url, {
+    headers: c.req.raw.headers,
+  })
+  return resp
 })
 
-// ✅ 静态资源托管（包括 .php 文件）
+// 静态资源（如 robots.txt, .css, .js 等）
 app.get('*', serveStatic({ root: './public' }))
 
-// ✅ Durable Object 测试路由（可选）
-app.get('/do', async (c) => {
-	const id = c.env.MY_CONTAINER.idFromName('a')
-	const obj = c.env.MY_CONTAINER.get(id)
-	const resp = await obj.fetch(c.req.raw)
-	return resp
+// Durable Object 路由（仍保留）
+app.get('/do/:id', async (c) => {
+  const id = c.req.param('id')
+  const stub = c.env.MY_CONTAINER.get(c.env.MY_CONTAINER.idFromName(id))
+  const resp = await stub.fetch(c.req.raw)
+  return resp
 })
 
-export default app
-
-// ✅ 导出 Durable Object 实现
-export { MyContainer }
+// 处理容器请求（默认由 Containers 模块提供）
+export default {
+  fetch: app.fetch,
+  ...handle({
+    MyContainer,
+  }),
+}

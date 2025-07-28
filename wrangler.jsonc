@@ -1,27 +1,34 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "frankenphp",
-  "compatibility_date": "2024-06-01",
   "main": "src/index.ts",
+  "main_type": "module",
+  "compatibility_date": "2025-07-17",
   "compatibility_flags": ["nodejs_compat"],
-
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "MY_CONTAINER",
-        "class_name": "MyContainer"
-      }
-    ]
+  "observability": {
+    "enabled": true
   },
-
+  "containers": [
+    {
+      "class_name": "MyContainer",
+      "image": "./Dockerfile",
+      "max_instances": 10,
+      "name": "frankenphp"
+    }
+  ],
   "migrations": [
     {
       "tag": "v1",
       "new_classes": ["MyContainer"]
     }
   ],
-
-  // 删除 upload
-  // "build": {
-  //   "upload": { ... } ❌ 不要这个
-  // }
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "afdb066fcc2146c0bab30d8ca805a7fc"
+    }
+  ],
+  "assets": {
+    "directory": "./Static_Creation/public"
+  }
 }

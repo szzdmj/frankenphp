@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { MyContainer } from "./container"; // ← 修正路径
+import { MyContainer } from "./container";
 
 export interface Env {
   MY_CONTAINER: DurableObjectNamespace;
@@ -15,7 +15,6 @@ app.get("/", async (c) => {
 
   const id = c.env.MY_CONTAINER.idFromName("demo");
   const stub = c.env.MY_CONTAINER.get(id);
-
   const res = await stub.fetch("http://do/demo");
 
   console.log("📤 Response received from Durable Object");
@@ -25,7 +24,7 @@ app.get("/", async (c) => {
 
 export default {
   fetch: app.fetch,
-  bindings: {
-    MY_CONTAINER: MyContainer,
-  },
 };
+
+// ✅ 必须导出 Durable Object
+export { MyContainer } from "./container";

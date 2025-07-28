@@ -1,17 +1,19 @@
 {
-  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/templates/schema.json",
   "name": "frankenphp",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-07-28",
+  "compatibility_date": "2024-05-01",
   "compatibility_flags": ["nodejs_compat"],
+  "node_compat": true,
 
-  "containers": [
-    {
-      "class_name": "MyContainer",
-      "image": "./Static_Creation/static-build.Dockerfile",
-      "name": "frankenphp"
-    }
-  ],
+  "build": {
+    "command": "npm install hono @cloudflare/containers"
+  },
+
+  "upload": {
+    "format": "modules",
+    "dir": "./Static_Creation/public"
+  },
+
+  "main": "src/container.ts",
 
   "durable_objects": {
     "bindings": [
@@ -22,14 +24,10 @@
     ]
   },
 
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["MyContainer"]
-    }
-  ],
+  "migrations": [],
+  "vars": {},
 
-  "assets": {
-    "directory": "./Static_Creation/public"
+  "containers": {
+    "entrypoint": "./Static_Creation/Dockerfile"
   }
 }

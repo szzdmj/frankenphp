@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
-import { MyContainer } from './container'
+import { MyContainer } from './container' // ← 必须导入
 
 export type Env = {
   MY_CONTAINER: DurableObjectNamespace
@@ -41,5 +41,5 @@ export default {
   fetch: app.fetch,
 }
 
-// ✅ 关键：导出 Durable Object 实现
+// ✅ 👇 必须导出 Durable Object 实现，否则部署失败
 export { MyContainer }

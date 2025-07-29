@@ -21,8 +21,8 @@ WORKDIR /app/public
 COPY ./public /app/public
 COPY ./public/Caddyfile /etc/caddy/Caddyfile
 
-# ✅ 修改 robots.txt（不能放在 COPY 之前）
-RUN echo "# Build at $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> /app/public/robots.txt
+# ✅ 在静态资源目录中创建唯一标识文件
+RUN echo "# Build ID: $(date -u +%Y%m%d%H%M%S) UTC" >> /app/public/robots.txt
 
 EXPOSE 8080
 

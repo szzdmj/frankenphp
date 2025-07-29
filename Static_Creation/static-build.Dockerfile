@@ -14,19 +14,15 @@ RUN apt-get update && apt-get install -y \
     php-opcache \
  && rm -rf /var/lib/apt/lists/*
 
-# ⬇️ 自行构建的 frankenphp 可执行文件复制
 COPY ./ /usr/bin/frankenphp
-
 WORKDIR /app/public
-
-# ⬇️ 添加调试辅助文件
-RUN echo "📦 Build complete: $(date)" > /app/public/build_time.txt && \
-    echo "<?php echo '<pre>cwd: ' . getcwd() . '\n'; print_r(scandir('.'));" > /app/public/debug.php
 
 COPY ./public /app/public
 COPY ./public/Caddyfile /etc/caddy/Caddyfile
 
+# ✅ 追加标记到 robots.txt（如果文件不存在也不会报错）
+RUN echo "# Build at $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> /app/public/robots.txt
+
 EXPOSE 8080
 
-# ✅ 保持原有启动命令不变
 CMD ["/usr/bin/frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

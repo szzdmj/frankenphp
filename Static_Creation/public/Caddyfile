@@ -1,5 +1,7 @@
 :8080 {
-	root * /public
-	php_server
+handle_path /index.php* {
+php_server
+}
+handle {
 	file_server
 }

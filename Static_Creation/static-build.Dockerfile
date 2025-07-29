@@ -20,8 +20,8 @@ COPY ./ /usr/bin/frankenphp
 WORKDIR /app/public
 
 # ⬇️ 添加调试辅助文件
-RUN echo "📦 Build complete: $(date)" > /app/public/__build_time.txt && \
-    echo "<?php echo '<pre>cwd: ' . getcwd() . '\n'; print_r(scandir('.'));" > /app/public/__debug.php
+RUN echo "📦 Build complete: $(date)" > /app/public/build_time.txt && \
+    echo "<?php echo '<pre>cwd: ' . getcwd() . '\n'; print_r(scandir('.'));" > /app/public/debug.php
 
 COPY ./public /app/public
 COPY ./public/Caddyfile /etc/caddy/Caddyfile

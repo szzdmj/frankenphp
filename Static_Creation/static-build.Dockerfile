@@ -22,4 +22,4 @@ COPY ./public/Caddyfile /etc/caddy/Caddyfile
 
 EXPOSE 8080
 
-CMD ["/usr/bin/frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD ["./usr/bin/frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

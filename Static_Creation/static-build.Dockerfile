@@ -14,17 +14,29 @@ RUN apt-get update && apt-get install -y \
     php-opcache \
  && rm -rf /var/lib/apt/lists/*
 
+# ✅ 复制 frankenphp 二进制到指定位置
 COPY ./ /usr/bin/frankenphp
+
+# ✅ 设置工作目录
 WORKDIR /app/public
 
-# ✅ 正确顺序：先复制 public，再修改
+# ✅ 复制静态资源和 Caddyfile
 COPY ./public /app/public
-COPY ./public/Caddyfile /etc/caddy/Caddyfile
+COPY ./public/Caddyfile /app/public/Caddyfile
 
-# ✅ 在静态资源目录中创建唯一标识文件
-RUN echo "# Build ID: $(date -u +%Y%m%d%H%M%S) UTC" >> /app/public/robots.txt
+# ✅ 添加调试脚本作为启动入口
+RUN echo '#!/bin/sh\n\
+echo "=== STARTING CONTAINER ==="\n\
+date -u\n\
+echo "--- /usr/bin/frankenphp ---"\n\
+ls -la /usr/bin/frankenphp\n\
+echo "--- /app/public/Caddyfile ---"\n\
+ls -la /app/public/Caddyfile\n\
+echo "--- running frankenphp ---"\n\
+/usr/bin/frankenphp run --config /app/public/Caddyfile\n' \
+> /start.sh && chmod +x /start.sh
 
 EXPOSE 8080
 
-# CMD ["/usr/bin/frankenphp", "run", "--config", "./public/Caddyfile"]
-
+# ✅ 强制执行调试脚本，确保命令不会被 Cloudflare 忽略
+ENTRYPOINT ["/start.sh"]

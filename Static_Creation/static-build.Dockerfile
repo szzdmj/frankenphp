@@ -26,5 +26,5 @@ RUN echo "# Build ID: $(date -u +%Y%m%d%H%M%S) UTC" >> /app/public/robots.txt
 
 EXPOSE 8080
 
-CMD ["/usr/bin/frankenphp", "run", "--config", "Caddyfile"]
+CMD ["/usr/bin/frankenphp", "run", "--config", "./public/Caddyfile"]
 

@@ -17,10 +17,11 @@ RUN apt-get update && apt-get install -y \
 COPY ./ /usr/bin/frankenphp
 WORKDIR /app/public
 
+# ✅ 正确顺序：先复制 public，再修改
 COPY ./public /app/public
 COPY ./public/Caddyfile /etc/caddy/Caddyfile
 
-# ✅ 追加标记到 robots.txt（如果文件不存在也不会报错）
+# ✅ 修改 robots.txt（不能放在 COPY 之前）
 RUN echo "# Build at $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> /app/public/robots.txt
 
 EXPOSE 8080

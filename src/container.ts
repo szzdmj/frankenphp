@@ -1,4 +1,11 @@
-// ✅ 新增：探针路径，用于调试容器是否响应
+export class MyContainer {
+async fetch(request: Request): Promise<Response> {
+const url = new URL(request.url);
+
+javascript
+複製
+編輯
+// ✅ 调试接口 /__probe：探测容器是否工作
 if (url.pathname === "/__probe") {
   try {
     const resp = await fetch("http://frankenphp:8080/");
@@ -7,7 +14,10 @@ if (url.pathname === "/__probe") {
     console.log("[PROBE] Body preview:", text.slice(0, 200));
     return new Response(
       `✅ Container responded with status ${resp.status}\n\n${text.slice(0, 200)}`,
-      { status: 200, headers: { "Content-Type": "text/plain" } }
+      {
+        status: 200,
+        headers: { "Content-Type": "text/plain" }
+      }
     );
   } catch (err) {
     console.error("[PROBE] Error contacting container:", err);
@@ -18,7 +28,7 @@ if (url.pathname === "/__probe") {
   }
 }
 
-// 正常转发请求到容器
+// 🌐 其他路径全部代理转发
 const backendUrl = "http://frankenphp:8080" + url.pathname;
 try {
   const response = await fetch(backendUrl, request);
@@ -29,4 +39,6 @@ try {
     status: 502,
     headers: { "Content-Type": "text/plain" }
   });
+}
+}
 }

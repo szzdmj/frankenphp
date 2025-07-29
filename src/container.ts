@@ -1,7 +1,7 @@
 export class MyContainer {
 async fetch(request: Request): Promise<Response> {
 const url = new URL(request.url);
-// 🛠️ 调试接口：测试容器响应
+// 调试接口：测试容器是否正常响应
 if (url.pathname === "/__probe") {
   const backend = "http://frankenphp:8080/";
   try {
@@ -27,7 +27,7 @@ if (url.pathname === "/__probe") {
   }
 }
 
-// 🌐 代理所有其他请求
+// 正常请求代理到容器
 const proxyUrl = "http://frankenphp:8080" + url.pathname;
 try {
   const resp = await fetch(proxyUrl, request);
@@ -38,4 +38,6 @@ try {
     status: 502,
     headers: { "Content-Type": "text/plain" }
   });
+}
+}
 }

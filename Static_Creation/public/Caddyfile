@@ -1,5 +1,5 @@
 :8080 {
-root * /public/
+root * /app/public/
 handle_path /index.php* {
 php_server
 }

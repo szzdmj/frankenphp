@@ -25,20 +25,15 @@ COPY ./public /app/public
 COPY ./public/Caddyfile /app/public/Caddyfile
 
 # ✅ 添加调试脚本作为启动入口
-RUN echo '#!/bin/sh
-echo "=== STARTING CONTAINER ==="
-date -u
-echo "--- /usr/bin/frankenphp ---"
-ls -la /usr/bin/frankenphp
-echo "--- /app/public/Caddyfile ---"
-ls -la /app/public/Caddyfile
-echo "--- checking if 8080 is listening ---"
-netstat -tuln
-echo "--- process list ---"
-ps aux
-echo "--- running frankenphp ---"
-/usr/bin/frankenphp run --config /app/public/Caddyfile
-' > /start.sh && chmod +x /start.sh
+RUN echo '#!/bin/sh\n\
+echo "=== STARTING CONTAINER ==="\n\
+date -u\n\
+echo "--- /usr/bin/frankenphp ---"\n\
+ls -l /usr/bin/frankenphp\n\
+echo "--- php -v ---"\n\
+php -v\n\
+exec /usr/bin/frankenphp' > /entrypoint.sh \
+  && chmod +x /entrypoint.sh
 
 EXPOSE 8080
 

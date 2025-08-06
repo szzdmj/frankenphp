@@ -1,7 +1,7 @@
 FROM dunglas/frankenphp
 
 # Copy your app
-COPY Static_Creation /app
+COPY Static_Creation/public /app
 COPY Caddyfile /etc/frankenphp/Caddyfile
 
 # Copy xcaddy modules

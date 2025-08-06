@@ -1,6 +1,6 @@
 import { Container, getRandom } from "@cloudflare/containers";
 
-export class SZContainer extends Container {
+export class MyContainer extends Container {
   defaultPort = 80; // Port the container is listening on
   sleepAfter = "1m"; // Stop the instance if requests not sent for 1 minutes
 }

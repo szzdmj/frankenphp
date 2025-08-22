@@ -9,7 +9,7 @@ const INSTANCE_COUNT = 5;
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-  let container = await getRandom(env.SZ_CONTAINER, INSTANCE_COUNT);
+  let container = await getRandom(env.MY_CONTAINER, INSTANCE_COUNT);
   // Pass the request to the container instance on its default port
   return await container.fetch(request);
   },

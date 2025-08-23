@@ -1,8 +1,10 @@
-FROM dunglas/frankenphp
+FROM dunglas/frankenphp:latest
 
-COPY public /app/public
-
-# 复制Caddy配置
+# Copy your app
+COPY Static_Creation/ /app/public
 COPY Caddyfile /etc/frankenphp/Caddyfile
 
-EXPOSE 80
+# Copy xcaddy modules
+# RUN XCADDY_ARGS="--with github.com/caddyserver/cache-handler --with github.com/caddy-dns/cloudflare"
+
+EXPOSE 8080
